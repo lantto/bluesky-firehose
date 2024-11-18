@@ -137,8 +137,21 @@ ws.onmessage = (event) => {
         transition: all 0.2s ease;
     `;
     
-    message.innerHTML = formatMessage(json.commit.record.text);
+    // Wrap message content in a clickable link
+    const messageLink = document.createElement('a');
+    messageLink.href = `https://bsky.app/profile/${json.did}/post/${json.commit.rkey}`;
+    messageLink.target = '_blank';
+    messageLink.style.cssText = `
+        text-decoration: none;
+        color: inherit;
+        cursor: pointer;
+        display: block;
+    `;
     
+    messageLink.innerHTML = formatMessage(json.commit.record.text);
+    message.appendChild(messageLink);
+    
+    // Move the message insertion and hover effects here
     columns[currentColumn].insertBefore(message, columns[currentColumn].firstChild);
     currentColumn = (currentColumn + 1) % COLUMN_COUNT;
     
