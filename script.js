@@ -27,7 +27,7 @@ container.style.cssText = `
 const controlsContainer = document.createElement('div');
 controlsContainer.style.cssText = `
     position: fixed;
-    bottom: 20px;
+    top: 20px;
     left: 20px;
     display: flex;
     gap: 10px;
@@ -38,7 +38,7 @@ const followBox = document.createElement('a');
 followBox.href = 'https://bsky.app/profile/lantto.bsky.social';
 followBox.target = '_blank';
 followBox.style.cssText = `
-    background: rgba(255, 255, 255, 0.1);
+    background: #2a2a2a;
     padding: 10px 15px;
     border-radius: 8px;
     color: #fff;
@@ -46,18 +46,19 @@ followBox.style.cssText = `
     font-family: monospace;
     transition: all 0.3s ease;
     cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 `;
 followBox.textContent = 'Follow me on BlueSky';
 followBox.addEventListener('mouseenter', () => {
-    followBox.style.background = 'rgba(255, 255, 255, 0.2)';
+    followBox.style.background = '#363636';
 });
 followBox.addEventListener('mouseleave', () => {
-    followBox.style.background = 'rgba(255, 255, 255, 0.1)';
+    followBox.style.background = '#2a2a2a';
 });
 
 const pauseButton = document.createElement('button');
 pauseButton.style.cssText = `
-    background: rgba(255, 255, 255, 0.1);
+    background: #2a2a2a;
     padding: 10px 15px;
     border-radius: 8px;
     color: #fff;
@@ -65,20 +66,21 @@ pauseButton.style.cssText = `
     font-family: monospace;
     transition: all 0.3s ease;
     cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 `;
-pauseButton.textContent = 'Pause All';
+pauseButton.textContent = 'Pause';
 let isPaused = false;
 pauseButton.addEventListener('click', () => {
     isPaused = !isPaused;
-    pauseButton.textContent = isPaused ? 'Resume' : 'Pause All';
-    pauseButton.style.background = isPaused ? 'rgba(78, 205, 196, 0.2)' : 'rgba(255, 255, 255, 0.1)';
+    pauseButton.textContent = isPaused ? 'Resume' : 'Pause';
+    pauseButton.style.background = isPaused ? '#4ECDC4' : '#2a2a2a';
     columnPaused.fill(isPaused);
 });
 pauseButton.addEventListener('mouseenter', () => {
-    pauseButton.style.background = isPaused ? 'rgba(78, 205, 196, 0.3)' : 'rgba(255, 255, 255, 0.2)';
+    pauseButton.style.background = isPaused ? '#5ddad1' : '#363636';
 });
 pauseButton.addEventListener('mouseleave', () => {
-    pauseButton.style.background = isPaused ? 'rgba(78, 205, 196, 0.2)' : 'rgba(255, 255, 255, 0.1)';
+    pauseButton.style.background = isPaused ? '#4ECDC4' : '#2a2a2a';
 });
 
 controlsContainer.appendChild(followBox);
@@ -135,8 +137,10 @@ function createColumns() {
         `;
         
         column.addEventListener('mouseenter', () => {
-            columnPaused[i] = true;
-            column.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+            if (!isPaused) {  // Only pause column if global pause is not active
+                columnPaused[i] = true;
+                column.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+            }
         });
         
         column.addEventListener('mouseleave', () => {
