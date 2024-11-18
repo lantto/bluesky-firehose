@@ -28,8 +28,8 @@ container.style.cssText = `
 const controlsContainer = document.createElement('div');
 controlsContainer.style.cssText = `
     position: fixed;
-    top: 20px;
-    left: 20px;
+    top: clamp(10px, 2vw, 20px);
+    left: clamp(10px, 2vw, 20px);
     display: flex;
     gap: 10px;
     z-index: 1000;
