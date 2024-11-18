@@ -129,7 +129,7 @@ function createColumns() {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: clamp(5px, 1vw, 10px);
+            gap: 10px;
             height: calc(100%);
             overflow: hidden;
             transition: all 0.3s ease;
