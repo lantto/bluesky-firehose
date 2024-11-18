@@ -23,6 +23,68 @@ container.style.cssText = `
     box-sizing: border-box;
 `;
 
+// After creating the container, add these new elements
+const controlsContainer = document.createElement('div');
+controlsContainer.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 1000;
+`;
+
+const followBox = document.createElement('a');
+followBox.href = 'https://bsky.app/profile/lantto.bsky.social';
+followBox.target = '_blank';
+followBox.style.cssText = `
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 15px;
+    border-radius: 8px;
+    color: #fff;
+    text-decoration: none;
+    font-family: monospace;
+    transition: all 0.3s ease;
+    cursor: pointer;
+`;
+followBox.textContent = 'Follow me on BlueSky';
+followBox.addEventListener('mouseenter', () => {
+    followBox.style.background = 'rgba(255, 255, 255, 0.2)';
+});
+followBox.addEventListener('mouseleave', () => {
+    followBox.style.background = 'rgba(255, 255, 255, 0.1)';
+});
+
+const pauseButton = document.createElement('button');
+pauseButton.style.cssText = `
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 15px;
+    border-radius: 8px;
+    color: #fff;
+    border: none;
+    font-family: monospace;
+    transition: all 0.3s ease;
+    cursor: pointer;
+`;
+pauseButton.textContent = 'Pause All';
+let isPaused = false;
+pauseButton.addEventListener('click', () => {
+    isPaused = !isPaused;
+    pauseButton.textContent = isPaused ? 'Resume' : 'Pause All';
+    pauseButton.style.background = isPaused ? 'rgba(78, 205, 196, 0.2)' : 'rgba(255, 255, 255, 0.1)';
+    columnPaused.fill(isPaused);
+});
+pauseButton.addEventListener('mouseenter', () => {
+    pauseButton.style.background = isPaused ? 'rgba(78, 205, 196, 0.3)' : 'rgba(255, 255, 255, 0.2)';
+});
+pauseButton.addEventListener('mouseleave', () => {
+    pauseButton.style.background = isPaused ? 'rgba(78, 205, 196, 0.2)' : 'rgba(255, 255, 255, 0.1)';
+});
+
+controlsContainer.appendChild(followBox);
+controlsContainer.appendChild(pauseButton);
+document.body.appendChild(controlsContainer);
+
 // Replace the fixed COLUMN_COUNT with a function
 function getColumnCount() {
     const width = window.innerWidth;
@@ -78,8 +140,10 @@ function createColumns() {
         });
         
         column.addEventListener('mouseleave', () => {
-            columnPaused[i] = false;
-            column.style.backgroundColor = 'transparent';
+            if (!isPaused) {  // Only unpause if global pause is not active
+                columnPaused[i] = false;
+                column.style.backgroundColor = 'transparent';
+            }
         });
         
         columns.push(column);
