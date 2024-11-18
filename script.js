@@ -13,7 +13,7 @@ container.style.cssText = `
     left: 0;
     right: 0;
     bottom: 0;
-    background: #1a1a1a;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
     color: #fff;
     overflow: hidden;
     font-family: monospace;
@@ -39,6 +39,18 @@ let columns = [];
 let columnPaused = [];
 let currentColumn = 0;
 
+// Add these new utility functions
+function getRandomColor() {
+    const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD', '#D4A5A5'];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+function formatMessage(text) {
+    // Convert URLs to clickable links
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.replace(urlRegex, url => `<a href="${url}" target="_blank" style="color: #4ECDC4;">${url}</a>`);
+}
+
 // Extract column creation logic into a function
 function createColumns() {
     container.innerHTML = '';
@@ -55,7 +67,9 @@ function createColumns() {
             gap: 10px;
             height: calc(100%);
             overflow: hidden;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            padding: 10px;
         `;
         
         column.addEventListener('mouseenter', () => {
@@ -110,17 +124,20 @@ ws.onmessage = (event) => {
     // Create new message
     const message = document.createElement('div');
     message.style.cssText = `
-        padding: 10px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 5px;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.05);
+        border-left: 4px solid ${getRandomColor()};
+        border-radius: 8px;
         opacity: 0;
         transform: translateY(-20px);
         animation: fadeIn 0.3s ease forwards;
         font-size: 14px;
         word-break: break-word;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        transition: all 0.2s ease;
     `;
     
-    message.textContent = json.commit.record.text;
+    message.innerHTML = formatMessage(json.commit.record.text);
     
     columns[currentColumn].insertBefore(message, columns[currentColumn].firstChild);
     currentColumn = (currentColumn + 1) % COLUMN_COUNT;
@@ -133,6 +150,17 @@ ws.onmessage = (event) => {
             setTimeout(() => msg.remove(), 300);
         });
     }
+
+    // Add hover effect to messages
+    message.addEventListener('mouseenter', () => {
+        message.style.transform = 'scale(1.02)';
+        message.style.background = 'rgba(255, 255, 255, 0.08)';
+    });
+
+    message.addEventListener('mouseleave', () => {
+        message.style.transform = 'scale(1)';
+        message.style.background = 'rgba(255, 255, 255, 0.05)';
+    });
 };
 
 // Add CSS animations
@@ -141,22 +169,22 @@ style.textContent = `
     @keyframes fadeIn {
         from { 
             opacity: 0;
-            transform: translateY(-20px);
+            transform: translateY(-20px) scale(0.95);
         }
         to { 
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
     }
     
     @keyframes fadeOut {
         from { 
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
         to { 
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(20px) scale(0.95);
         }
     }
 `;
