@@ -23,41 +23,69 @@ container.style.cssText = `
     box-sizing: border-box;
 `;
 
-// Create columns for messages
-const COLUMN_COUNT = 6;
-const columns = [];
-const columnPaused = new Array(COLUMN_COUNT).fill(false);
-
-for (let i = 0; i < COLUMN_COUNT; i++) {
-    const column = document.createElement('div');
-    column.style.cssText = `
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        height: calc(100%;
-        overflow: hidden;
-        transition: background-color 0.3s ease;
-    `;
-    
-    // Add hover listeners
-    column.addEventListener('mouseenter', () => {
-        columnPaused[i] = true;
-        column.style.backgroundColor = 'rgba(255, 255, 255, 0.05)'; // Subtle highlight
-    });
-    
-    column.addEventListener('mouseleave', () => {
-        columnPaused[i] = false;
-        column.style.backgroundColor = 'transparent';
-    });
-    
-    columns.push(column);
-    container.appendChild(column);
+// Replace the fixed COLUMN_COUNT with a function
+function getColumnCount() {
+    const width = window.innerWidth;
+    if (width < 768) return 2;        // Mobile
+    if (width < 1024) return 3;       // Tablet
+    if (width < 1440) return 4;       // Small Desktop
+    if (width < 1920) return 5;       // Regular Desktop
+    return 6;                         // Large Desktop
 }
 
-document.body.appendChild(container);
-
+// Initialize variables
+let COLUMN_COUNT = getColumnCount();
+let columns = [];
+let columnPaused = [];
 let currentColumn = 0;
+
+// Extract column creation logic into a function
+function createColumns() {
+    container.innerHTML = '';
+    columns = [];
+    COLUMN_COUNT = getColumnCount();
+    columnPaused = new Array(COLUMN_COUNT).fill(false);
+    
+    for (let i = 0; i < COLUMN_COUNT; i++) {
+        const column = document.createElement('div');
+        column.style.cssText = `
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            height: calc(100%);
+            overflow: hidden;
+            transition: background-color 0.3s ease;
+        `;
+        
+        column.addEventListener('mouseenter', () => {
+            columnPaused[i] = true;
+            column.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+        });
+        
+        column.addEventListener('mouseleave', () => {
+            columnPaused[i] = false;
+            column.style.backgroundColor = 'transparent';
+        });
+        
+        columns.push(column);
+        container.appendChild(column);
+    }
+    currentColumn = 0;
+}
+
+// Initialize columns on load
+createColumns();
+
+// Update columns on resize
+window.addEventListener('resize', () => {
+    const newColumnCount = getColumnCount();
+    if (newColumnCount !== COLUMN_COUNT) {
+        createColumns();
+    }
+});
+
+document.body.appendChild(container);
 
 ws.onmessage = (event) => {
     const json = JSON.parse(event.data);
