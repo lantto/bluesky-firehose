@@ -190,8 +190,10 @@ ws.onmessage = (event) => {
     // If all columns are paused, skip this message
     if (attempts === COLUMN_COUNT) return;
 
-    // Create new message
-    const message = document.createElement('div');
+    // Create new message as a link
+    const message = document.createElement('a');
+    message.href = `https://bsky.app/profile/${json.did}/post/${json.commit.rkey}`;
+    message.target = '_blank';
     message.style.cssText = `
         padding: 15px;
         background: rgba(255, 255, 255, 0.05);
@@ -204,21 +206,13 @@ ws.onmessage = (event) => {
         word-break: break-word;
         box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         transition: all 0.2s ease;
-    `;
-    
-    // Wrap message content in a clickable link
-    const messageLink = document.createElement('a');
-    messageLink.href = `https://bsky.app/profile/${json.did}/post/${json.commit.rkey}`;
-    messageLink.target = '_blank';
-    messageLink.style.cssText = `
         text-decoration: none;
         color: inherit;
         cursor: pointer;
         display: block;
     `;
     
-    messageLink.innerHTML = formatMessage(json.commit.record.text);
-    message.appendChild(messageLink);
+    message.innerHTML = formatMessage(json.commit.record.text);
     
     // Move the message insertion and hover effects here
     columns[currentColumn].insertBefore(message, columns[currentColumn].firstChild);
