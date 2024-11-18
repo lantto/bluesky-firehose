@@ -18,7 +18,7 @@ container.style.cssText = `
     overflow: hidden;
     font-family: monospace;
     display: flex;
-    gap: clamp(10px, 2vw, 20px);
+    gap: 10px;
     padding: clamp(10px, 2vw, 20px);
     padding-top: 20px;
     box-sizing: border-box;
