@@ -2,7 +2,7 @@ const url = "wss://jetstream2.us-east.bsky.network/subscribe?wantedCollections=a
 
 const ws = new WebSocket(url);
 ws.onopen = () => {
-    console.log("Connected to BlueSky WebSocket");
+    console.log("Connected to Bluesky WebSocket");
 };
 
 // Create container for messages
@@ -18,8 +18,9 @@ container.style.cssText = `
     overflow: hidden;
     font-family: monospace;
     display: flex;
-    gap: 20px;
-    padding: 20px;
+    gap: clamp(10px, 2vw, 20px);
+    padding: clamp(10px, 2vw, 20px);
+    padding-top: 20px;
     box-sizing: border-box;
 `;
 
@@ -48,7 +49,7 @@ followBox.style.cssText = `
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 `;
-followBox.textContent = 'Follow me on BlueSky';
+followBox.textContent = 'Follow me @ Bsky';
 followBox.addEventListener('mouseenter', () => {
     followBox.style.background = '#363636';
 });
@@ -128,12 +129,12 @@ function createColumns() {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: clamp(5px, 1vw, 10px);
             height: calc(100%);
             overflow: hidden;
             transition: all 0.3s ease;
-            border-radius: 10px;
-            padding: 10px;
+            border-radius: clamp(5px, 1vw, 10px);
+            padding: clamp(5px, 1vw, 10px);
         `;
         
         column.addEventListener('mouseenter', () => {
